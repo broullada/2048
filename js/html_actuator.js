@@ -3,9 +3,9 @@ function HTMLActuator() {
   this.scoreContainer   = document.querySelector(".score-container");
   this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
-  this.sharingContainer = document.querySelector(".score-sharing");
 
   this.score = 0;
+  this.snd = new Audio('./sound-sets/lucasarts/silence.mp3');
 }
 
 HTMLActuator.prototype.actuate = function (grid, metadata) {
@@ -38,10 +38,6 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 
 // Continues the game (both restart and keep playing)
 HTMLActuator.prototype.continueGame = function () {
-  if (typeof ga !== "undefined") {
-    ga("send", "event", "game", "restart");
-  }
-
   this.clearMessage();
 };
 
@@ -115,14 +111,121 @@ HTMLActuator.prototype.updateScore = function (score) {
   this.score = score;
 
   this.scoreContainer.textContent = this.score;
-
+  this.snd.pause();
   if (difference > 0) {
     var addition = document.createElement("div");
     addition.classList.add("score-addition");
     addition.textContent = "+" + difference;
 
     this.scoreContainer.appendChild(addition);
+
+   if (difference < 8) {
+      this.snd = new Audio('./sound-sets/lucasarts/tonoLOOM.mp3');  
+      
+    }
+    if (difference >= 8) {
+      this.snd = new Audio('./sound-sets/lucasarts/tonoMI.mp3');  
+      
+    }
+    if (difference >= 16) {
+      this.snd = new Audio('./sound-sets/lucasarts/tonoMI2.mp3');  
+      
+    }
+    if (difference >= 32) {
+      this.snd = new Audio('./sound-sets/lucasarts/tonoIJ4.mp3');  
+      
+    }
+    if (difference >= 64) {
+       var a =  Math.floor((Math.random() * 4) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tonoDOTT.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/thirstyDOTT.mp3');         
+        }
+        if (a == 3) {
+            this.snd = new Audio('./sound-sets/lucasarts/BTTMDOTT.mp3');
+        }  
+        if (a == 4) {
+            this.snd = new Audio('./sound-sets/lucasarts/TOTWDOTT.mp3'); 
+        }   
+      
+    }
+  if (difference >= 128) {
+       var a =  Math.floor((Math.random() * 2) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tonoSM.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/CIKHHSM.mp3');         
+        }
+    }
+    if (difference >= 256) {
+       var a =  Math.floor((Math.random() * 2) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tonoFT.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/WISAFT.mp3');         
+        }
+    }
+     if (difference >= 512) {
+       var a =  Math.floor((Math.random() * 3) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tonoTD.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/UERHTD.mp3');         
+        }
+        if (a == 3) {
+            this.snd = new Audio('./sound-sets/lucasarts/TUVATD.mp3');         
+        }
+    }
+    if (difference >= 1024) {
+       var a =  Math.floor((Math.random() * 6) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tonoMI3.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/ton2MI3.mp3');         
+        }
+        if (a == 3) {
+            this.snd = new Audio('./sound-sets/lucasarts/PMSCMI3.mp3');         
+        }
+        if (a == 4) {
+          this.snd = new Audio('./sound-sets/lucasarts/PQABMI3.mp3');   
+        }
+        if (a == 5) {
+            this.snd = new Audio('./sound-sets/lucasarts/DDCGTMI3.mp3');         
+        }
+        if (a == 6) {
+            this.snd = new Audio('./sound-sets/lucasarts/PZDBPMMI3..mp3');         
+        }
+    }
+     if (difference >= 2048) {
+       var a =  Math.floor((Math.random() * 5) + 1);
+        if (a == 1) {
+          this.snd = new Audio('./sound-sets/lucasarts/tono3GF.mp3');   
+        }
+        if (a == 2) {
+            this.snd = new Audio('./sound-sets/lucasarts/tono2GF.mp3');         
+        }
+        if (a == 3) {
+            this.snd = new Audio('./sound-sets/lucasarts/tonoGF.mp3');         
+        }
+        if (a == 4) {
+          this.snd = new Audio('./sound-sets/lucasarts/UBEEMN9GF.mp3');   
+        }
+        if (a == 5) {
+            this.snd = new Audio('./sound-sets/lucasarts/MLMCGF.mp3');         
+        }
+    }
   }
+  else {
+    this.snd = new Audio('./sound-sets/lucasarts/toneMM.mp3');
+  }
+ 
+  this.snd.play();
 };
 
 HTMLActuator.prototype.updateBestScore = function (bestScore) {
@@ -131,38 +234,15 @@ HTMLActuator.prototype.updateBestScore = function (bestScore) {
 
 HTMLActuator.prototype.message = function (won) {
   var type    = won ? "game-won" : "game-over";
-  var message = won ? "You win!" : "Game over!";
-
-  if (typeof ga !== "undefined") {
-    ga("send", "event", "game", "end", type, this.score);
-  }
+  var message = won ? "Kisses from Murray!" : "Murray hates you!";
 
   this.messageContainer.classList.add(type);
   this.messageContainer.getElementsByTagName("p")[0].textContent = message;
-
-  this.clearContainer(this.sharingContainer);
-  this.sharingContainer.appendChild(this.scoreTweetButton());
-  twttr.widgets.load();
+  
 };
 
 HTMLActuator.prototype.clearMessage = function () {
   // IE only takes one value to remove at a time.
   this.messageContainer.classList.remove("game-won");
   this.messageContainer.classList.remove("game-over");
-};
-
-HTMLActuator.prototype.scoreTweetButton = function () {
-  var tweet = document.createElement("a");
-  tweet.classList.add("twitter-share-button");
-  tweet.setAttribute("href", "https://twitter.com/share");
-  tweet.setAttribute("data-via", "gabrielecirulli");
-  tweet.setAttribute("data-url", "http://git.io/2048");
-  tweet.setAttribute("data-counturl", "http://gabrielecirulli.github.io/2048/");
-  tweet.textContent = "Tweet";
-
-  var text = "I scored " + this.score + " points at 2048, a game where you " +
-             "join numbers to score high! #2048game";
-  tweet.setAttribute("data-text", text);
-
-  return tweet;
 };
